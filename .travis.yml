@@ -24,3 +24,15 @@ after_success:
   - docker push antondobrev/nginx-multi
   - docker push antondobrev/server-multi
   - docker push antondobrev/worker-multi
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-central-1"
+  app: "multi-container"
+  env: "Multi-container-env"
+  bucket_name: "elasticbeanstalk-eu-central-1-496142263454"
+  bucket_path: "multi-container"
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: "$AWS_SECRET_KEY"
