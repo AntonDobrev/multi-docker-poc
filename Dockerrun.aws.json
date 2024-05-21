@@ -5,13 +5,15 @@
       "name": "client",
       "image": "antondobrev/client-multi",
       "hostname": "client",
-      "essential": false
+      "essential": false,
+      "memory": 256
     },
     {
       "name": "nginx",
       "image": "antondobrev/nginx-multi",
       "hostname": "nginx",
       "essential": true,
+      "memory": 256,
       "portMappings": [
         {
           "hostPort": 80,
@@ -24,13 +26,15 @@
       "name": "server",
       "image": "antondobrev/server-multi",
       "hostname": "server",
-      "essential": false
+      "essential": false,
+      "memory": 256
     },
     {
       "name": "worker",
       "image": "antondobrev/worker-multi",
       "hostname": "worker",
-      "essential": false
+      "essential": false,
+      "memory": 256
     }
   ]
 }
