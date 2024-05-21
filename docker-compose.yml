@@ -1,0 +1,51 @@
+# TODO - do not commit db password - this is intentional for educational purposes - using the default Postgres password
+# https://docs.docker.com/compose/use-secrets/ for password
+# https://hub.docker.com/_/postgres and how to add the password
+services:
+  postgres: 
+    image: postgres:16.3-alpine3.18
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+  redis: 
+    image: "redis:7.2.4"
+  api:
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - REDIS_HOST=redis,
+      - REDIS_PORT=6379 #specify the default redis port, it can be altered via the redis image service settings
+      - PGUSER=postgres
+      - PGGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+  client: 
+    environment:
+      - WDS_SOCKET_PORT=0
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+  worker: 
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+  nginx:
+    restart: always
+    depends_on:
+      - api
+      - client
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - "3050:80"

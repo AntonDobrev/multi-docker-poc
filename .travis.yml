@@ -1,0 +1,25 @@
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t antondobrev/docker-react-multi -f ./client/Dockerfile.dev ./client
+
+# CI=true so that npm does not wait for instructions, just return a report that the test succeeded or failed
+script:
+  - docker run -e CI=true antondobrev/docker-react-multi npm run test
+
+after_success:
+  # build an image for every service
+  - docker build -t antondobrev/client-multi ./client
+  - docker build -t antondobrev/nginx-multi ./nginx
+  - docker build -t antondobrev/server-multi ./server
+  - docker build -t antondobrev/worker-multi ./worker
+  # login to the docker CLI by piping the password to the standard in
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # push all images
+  - docker push antondobrev/client-multi
+  - docker push antondobrev/nginx-multi
+  - docker push antondobrev/server-multi
+  - docker push antondobrev/worker-multi
