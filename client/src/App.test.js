@@ -11,3 +11,5 @@ test("renders learn react link", () => {
 test("mock test 1", () => {});
 
 test("mock test 2", () => {});
+
+test("mock test 3", () => {});
